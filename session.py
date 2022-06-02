@@ -58,13 +58,13 @@ class Session:
         self.join_room(t)
 
     def list_room(self, r):
-        buf = ''
+        count = len(r)
+        buf = f'{count} rooms are available:\n'
         for t in r:
             buf += f'[{t.get_id()}] {t.get_name()} ({t.count()}/{t.get_max_count()})\n'
-        if buf:
-            self.send_msg(buf, True)
-        else:
-            self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n', True)
+        if count <= 0:
+            buf += f'\tTry \'{SessionCmd.NEW}\' to make new room\n'
+        self.send_msg(buf, True)
 
     def join_room(self, r):
         if not r.add_session(self):
