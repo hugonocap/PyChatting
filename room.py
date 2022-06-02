@@ -16,18 +16,21 @@ class Room:
     def count(self):
         return len(self.sess)
 
-    def remove_sess(self, sess):
+    def add_session(self, sess):
+        self.sess.append(sess)
+
+    def remove_session(self, sess):
         self.sess.remove(sess)
 
     def kick(self, sess):
         sess.leave_room()
-        self.remove_sess(sess)
+        self.remove_session(sess)
 
     def refresh(self):
         i = 0
         while i < len(self.sess):
             if self.sess[i].get_room() != self.id:
-                self.remove_sess(self.sess[i])
+                self.remove_session(self.sess[i])
             else:
                 i += 1
 
@@ -35,3 +38,11 @@ class Room:
         for sess in self.sess:
             if sess != exception:
                 sess.send_msg(msg)
+
+def get_free_rid(r):
+    last = -1
+    for t in r:
+        if t.get_id() - last > 1:
+            break
+        last = t.get_id()
+    return last+1

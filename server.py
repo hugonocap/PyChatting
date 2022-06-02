@@ -34,14 +34,6 @@ class Server:
                 return r
         return None
 
-    def get_free_rid(self):
-        last = -1
-        for r in self.room:
-            if r.get_id() - last > 1:
-                break
-            last = r.get_id()
-        return last+1
-
     def close_session(self, i):
         r = self.get_room_by_session(self.sess[i])
         if r:
@@ -75,15 +67,11 @@ class Server:
             while i < len(self.sess):
                 if self.sess[i].get_sd() in slist[0]:
                     r = self.get_room_by_session(self.sess[i])
-                    match self.sess[i].handle(r):
+                    match self.sess[i].handle(self.room, r):
                         case session.HandleReturn.FALSE:
                             rlist.remove(self.sess[i].get_sd())
                             self.close_session(i)
                             i -= 1
-                        case session.HandleReturn.NEW_ROOM:
-                            r = room.Room(self.get_free_rid(), self.sess[i])
-                            self.room.append(r)
-                            self.sess[i].accept_room(r.get_id())
                         case _:
                             pass
                 i += 1
