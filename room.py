@@ -4,7 +4,7 @@ class Room:
     def __init__(self, rid, sess_name):
         self.id = rid
         self.name = f'{sess_name}\'s room'
-        self.max_count = 1
+        self.max_count = 5
         self.sess = []
 
     def __del__(self):
@@ -48,6 +48,12 @@ class Room:
         for sess in self.sess:
             if sess != exception:
                 sess.send_msg(msg)
+
+    def get_online(self):
+        buf = f'{self.count()} users are online:\n'
+        for sess in self.sess:
+            buf += f'\t{sess.name}\n'
+        return buf
 
 def get_free_rid(r):
     last = -1

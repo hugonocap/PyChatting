@@ -20,8 +20,9 @@ class SessionCmd:
     JOIN = 'join'
 
 class ChatCmd:
-    QUIT = '/quit'
-    HELP = '/help'
+    QUIT   = '/quit'
+    HELP   = '/help'
+    ONLINE = '/online'
 
 class Session:
     def __init__(self, connection):
@@ -104,6 +105,8 @@ class Session:
                 self.leave_room()
             case ChatCmd.HELP:
                 self.send_msg('Sorry, this feature temporarily not implemented yet\n')
+            case ChatCmd.ONLINE:
+                self.send_msg(r.get_online())
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)
