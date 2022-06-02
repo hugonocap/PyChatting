@@ -30,3 +30,8 @@ class Room:
                 self.remove_sess(self.sess[i])
             else:
                 i += 1
+
+    def send_msg(self, msg, exception):
+        for sess in self.sess:
+            if sess != exception:
+                sess.send_msg(msg)

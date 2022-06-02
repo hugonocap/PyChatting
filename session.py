@@ -16,6 +16,10 @@ class SessionCmd:
     HELP = 'help'
     NEW  = 'new'
 
+class ChatCmd:
+    QUIT = '/quit'
+    HELP = '/help'
+
 class HandleReturn:
     FALSE = 0
     TRUE  = 1
@@ -59,7 +63,19 @@ class Session:
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n')
 
-    def handle(self):
+    def chat(self, buf, r):
+        match buf:
+            case ChatCmd.QUIT:
+                self.leave_room()
+            case ChatCmd.HELP:
+                self.send_msg('Sorry, this feature temporarily not implemented yet\n')
+            case _:
+                if buf and buf[0] != '/':
+                    r.send_msg(f'\n>> {self.name}: {buf}\n', sess)
+                else:
+                    self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n')
+
+    def handle(self, r):
         if not (buf := self.sd.recv(INBUFSIZE)):
             self.state = SessionState.ERROR
             return HandleReturn.FALSE
@@ -80,9 +96,7 @@ class Session:
             case SessionState.CMD:
                 self.cmd(buf)
             case SessionState.ROOM:
-                if buf == '/quit':
-                    self.leave_room()
-                    self.state = SessionState.CMD
+                self.chat(buf, r)
             case _:
                 pass
 

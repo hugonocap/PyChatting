@@ -74,7 +74,8 @@ class Server:
             i = 0
             while i < len(self.sess):
                 if self.sess[i].get_sd() in slist[0]:
-                    match self.sess[i].handle():
+                    r = self.get_room_by_session(self.sess[i])
+                    match self.sess[i].handle(r):
                         case session.HandleReturn.FALSE:
                             rlist.remove(self.sess[i].get_sd())
                             self.close_session(i)
