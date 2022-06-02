@@ -2,7 +2,7 @@ from sys import stderr
 import socket
 from select import select
 
-import session
+import session, room
 
 LISTENQUEUE = 32
 
@@ -17,17 +17,46 @@ class Server:
             print(err, file=stderr)
             return
         self.sess = []
+        self.room = []
 
     def __del__(self):
         self.ls.close()
-        for i in range(len(self.sess)):
-            self.close_session(i)
+        while self.sess:
+            self.close_session(0)
 
     def accept_client(self):
         self.sess.append(session.Session(self.ls.accept()))
 
+    def get_room_by_session(self, sess):
+        rid = sess.get_room()
+        for r in self.room:
+            if r.get_id() == rid:
+                return r
+        return None
+
+    def get_free_rid(self):
+        last = -1
+        for r in self.room:
+            if r.get_id() - last > 1:
+                break
+            last = r.get_id()
+        return last+1
+
     def close_session(self, i):
+        r = self.get_room_by_session(self.sess[i])
+        if r:
+            r.kick(self.sess[i])
         self.sess.pop(i)
+
+    def handle_room(self):
+        i = 0
+        while i < len(self.room):
+            r = self.room[i]
+            r.refresh()
+            if r.count() <= 0:
+                self.room.remove(r)
+            else:
+                i += 1
 
     def run(self):
         rlist = [self.ls]
@@ -42,9 +71,20 @@ class Server:
                 self.accept_client()
                 rlist.append(self.sess[len(self.sess)-1].sd)
 
-            for i in range(len(self.sess)):
+            i = 0
+            while i < len(self.sess):
                 if self.sess[i].get_sd() in slist[0]:
                     match self.sess[i].handle():
                         case session.HandleReturn.FALSE:
                             rlist.remove(self.sess[i].get_sd())
                             self.close_session(i)
+                            i -= 1
+                        case session.HandleReturn.NEW_ROOM:
+                            r = room.Room(self.get_free_rid(), self.sess[i])
+                            self.room.append(r)
+                            self.sess[i].accept_room(r.get_id())
+                        case _:
+                            pass
+                i += 1
+
+            self.handle_room()

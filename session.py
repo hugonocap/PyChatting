@@ -1,30 +1,32 @@
 import socket
 
-# Just constants
 INBUFSIZE = 1024
 
-# Session state
-
 class SessionState:
-    START  = 1
-    LOGIN  = START
-    CMD    = 2
-    FINISH = 3
-    ERROR  = 4
+    START    = 1
+    LOGIN    = START
+    CMD      = 2
+    NEW_ROOM = 5
+    ROOM     = 6
+    FINISH   = 3
+    ERROR    = 4
 
 class SessionCmd:
     QUIT = 'quit'
     HELP = 'help'
+    NEW  = 'new'
 
 class HandleReturn:
-    FALSE = False
-    TRUE  = True
+    FALSE = 0
+    TRUE  = 1
+    NEW_ROOM = 3
 
 class Session:
     def __init__(self, connection):
         self.sd   = connection[0]
         self.addr = connection[1]
         self.name = ''
+        self.room = -1
         self.state = SessionState.START
         self.buf = ''
         self.send_msg('Enter your name: ')
@@ -34,6 +36,9 @@ class Session:
 
     def get_sd(self):
         return self.sd
+
+    def get_room(self):
+        return self.room
 
     def send_msg(self, msg):
         self.sd.sendall(msg.replace('\n', '\r\n').encode())
@@ -48,13 +53,15 @@ class Session:
                 self.send_msg(f'Goodbye {self.name}!\n')
                 self.state = SessionState.FINISH
             case SessionCmd.HELP:
-                self.send_msg(f'\'{SessionCmd.QUIT}\' to quit server\n'
-                              f'\'{SessionCmd.HELP}\' to get this help\n')
+                self.send_msg('Sorry, this feature temporarily not implemented yet\n')
+            case SessionCmd.NEW:
+                self.state = SessionState.NEW_ROOM
             case _:
-                self.send_msg(f'Invalid command, try \'help\'\n')
+                self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n')
 
     def handle(self):
         if not (buf := self.sd.recv(INBUFSIZE)):
+            self.state = SessionState.ERROR
             return HandleReturn.FALSE
         self.buf += buf.decode()
 
@@ -69,7 +76,30 @@ class Session:
                 self.state = SessionState.CMD
             case SessionState.CMD:
                 self.cmd(buf)
+            case SessionState.ROOM:
+                if buf == '/quit':
+                    self.leave_room()
+                    self.state = SessionState.CMD
             case _:
                 pass
 
-        return self.state != SessionState.FINISH and self.state != SessionState.ERROR
+        match self.state:
+            case SessionState.NEW_ROOM:
+                return HandleReturn.NEW_ROOM
+            case SessionState.FINISH:
+                return HandleReturn.FALSE
+            case SessionState.ERROR:
+                return HandleReturn.FALSE
+            case _:
+                return HandleReturn.TRUE
+
+    def accept_room(self, i):
+        self.room = i
+        self.state = SessionState.ROOM
+
+    def decline_room(self):
+        self.state = SessionState.CMD
+
+    def leave_room(self):
+        self.room = -1
+        self.state = SessionState.CMD
