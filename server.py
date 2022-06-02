@@ -18,8 +18,14 @@ class Server:
 
     def __del__(self):
         self.ls.close()
-        for s in self.sess:
-            self.close_session(s)
+        for i in range(len(self.sess)):
+            self.close_session(i)
+
+    def accept_client(self):
+        self.sess.append(session.Session(self.ls.accept()))
+
+    def close_session(self, i):
+        self.sess.pop(i)
 
     def run(self):
         rlist = [self.ls]
@@ -34,15 +40,9 @@ class Server:
                 self.accept_client()
                 rlist.append(self.sess[len(self.sess)-1].sd)
 
-            for sess in self.sess:
-                if sess.sd in slist[0]:
-                    if not sess.handle():
-                        self.close_session(sess)
-                        rlist.remove(sess.sd)
-
-    def accept_client(self):
-        self.sess.append(session.Session(self.ls.accept()))
-
-    def close_session(self, sess):
-        self.sess.remove(sess)
-        del sess
+            for i in range(len(self.sess)):
+                if self.sess[i].sd in slist[0]:
+                    res = self.sess[i].handle()
+                    if not res:
+                        rlist.remove(self.sess[i].sd)
+                        self.close_session(i)
