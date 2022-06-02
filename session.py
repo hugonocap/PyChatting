@@ -23,6 +23,9 @@ class Session:
     def __del__(self):
         self.sd.close()
 
+    def get_sd(self):
+        return self.sd
+
     def send_msg(self, msg):
         self.sd.sendall(msg.replace('\n', '\r\n').encode())
 

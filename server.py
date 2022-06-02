@@ -43,8 +43,8 @@ class Server:
                 rlist.append(self.sess[len(self.sess)-1].sd)
 
             for i in range(len(self.sess)):
-                if self.sess[i].sd in slist[0]:
+                if self.sess[i].get_sd() in slist[0]:
                     res = self.sess[i].handle()
                     if not res:
-                        rlist.remove(self.sess[i].sd)
+                        rlist.remove(self.sess[i].get_sd())
                         self.close_session(i)
