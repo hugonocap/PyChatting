@@ -26,11 +26,14 @@ class Room:
     def add_session(self, sess):
         if self.count() < self.max_count:
             self.sess.append(sess)
+            self.send_msg(f'{sess.get_name()} has joined our room!\n',
+                          sess, True)
             return True
         return False
 
     def remove_session(self, sess):
         self.sess.remove(sess)
+        self.send_msg(f'{sess.get_name()} has left the room...\n', sess, True)
 
     def kick(self, sess):
         sess.leave_room()
@@ -44,13 +47,15 @@ class Room:
             else:
                 i += 1
 
-    def send_msg(self, msg, exception):
+    def send_msg(self, msg, exception, prefix=False):
+        if prefix:
+            msg = '> ' + msg
         for sess in self.sess:
             if sess != exception:
                 sess.send_msg(msg)
 
     def get_online(self):
-        buf = f'{self.count()} users are online:\n'
+        buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}):\n'
         for sess in self.sess:
             buf += f'\t{sess.name}\n'
         return buf

@@ -40,6 +40,9 @@ class Session:
     def get_sd(self):
         return self.sd
 
+    def get_name(self):
+        return self.name
+
     def get_room(self):
         return self.room
 
@@ -50,7 +53,8 @@ class Session:
 
     def login(self, name):
         self.name = name
-        self.send_msg(f'Welcome {name}!\n', True)
+        self.send_msg(f'Welcome {name}! Try \'{SessionCmd.HELP}\' to '
+                       'list the available commands\n', True)
 
     def new_room(self, r):
         t = room.Room(room.get_free_rid(r), self.name)
@@ -69,13 +73,15 @@ class Session:
     def join_room(self, r):
         if not r.add_session(self):
             self.send_msg('Can\'t join the room...\n', True)
-            return
         self.room = r.get_id()
         self.state = SessionState.ROOM
+        self.send_msg(f'You have joined the room with {self.room} id. '
+                      f'Try \'{ChatCmd.HELP}\' to get available commands\n', True)
 
     def leave_room(self):
         self.room = -1
         self.state = SessionState.CMD
+        self.send_msg('You have left the room\n', True)
 
     def cmd(self, cmd, r):
         cmd, sep, args = cmd.partition(' ')
