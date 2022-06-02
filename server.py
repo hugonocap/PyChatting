@@ -67,13 +67,10 @@ class Server:
             while i < len(self.sess):
                 if self.sess[i].get_sd() in slist[0]:
                     r = self.get_room_by_session(self.sess[i])
-                    match self.sess[i].handle(self.room, r):
-                        case session.HandleReturn.FALSE:
-                            rlist.remove(self.sess[i].get_sd())
-                            self.close_session(i)
-                            i -= 1
-                        case _:
-                            pass
+                    if not self.sess[i].handle(self.room, r):
+                        rlist.remove(self.sess[i].get_sd())
+                        self.close_session(i)
+                        i -= 1
                 i += 1
 
             self.handle_room()

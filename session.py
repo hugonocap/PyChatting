@@ -21,10 +21,6 @@ class ChatCmd:
     QUIT = '/quit'
     HELP = '/help'
 
-class HandleReturn:
-    FALSE = 0
-    TRUE  = 1
-
 class Session:
     def __init__(self, connection):
         self.sd   = connection[0]
@@ -83,16 +79,16 @@ class Session:
     def handle(self, r, self_r):
         if not (buf := self.sd.recv(INBUFSIZE)):
             self.state = SessionState.ERROR
-            return HandleReturn.FALSE
+            return False
 
         self.buf += buf.decode()
         if len(self.buf) >= INBUFSIZE:
-            return HandleReturn.FALSE
+            return False
 
         buf, sep, self.buf = self.buf.partition('\r\n')
         if not sep:
             self.buf = buf
-            return HandleReturn.TRUE
+            return True
 
         match self.state:
             case SessionState.LOGIN:
@@ -105,13 +101,8 @@ class Session:
             case _:
                 pass
 
-        match self.state:
-            case SessionState.FINISH:
-                return HandleReturn.FALSE
-            case SessionState.ERROR:
-                return HandleReturn.FALSE
-            case _:
-                return HandleReturn.TRUE
+        return self.state != SessionState.FINISH and \
+               self.state != SessionState.ERROR
 
     def join_room(self, r):
         self.room = r.get_id()
