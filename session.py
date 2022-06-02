@@ -32,7 +32,7 @@ class Session:
         self.room = -1
         self.state = SessionState.START
         self.buf = ''
-        self.send_msg('Enter your name: ')
+        self.send_msg('Enter your name: ', True)
 
     def __del__(self):
         self.sd.close()
@@ -43,12 +43,14 @@ class Session:
     def get_room(self):
         return self.room
 
-    def send_msg(self, msg):
+    def send_msg(self, msg, prefix=False):
+        if prefix:
+            msg = '> ' + msg
         self.sd.sendall(msg.replace('\n', '\r\n').encode())
 
     def login(self, name):
         self.name = name
-        self.send_msg(f'Welcome {name}!\n')
+        self.send_msg(f'Welcome {name}!\n', True)
 
     def new_room(self, r):
         t = room.Room(room.get_free_rid(r), self.name)
@@ -60,13 +62,13 @@ class Session:
         for t in r:
             buf += f'[{t.get_id()}] {t.get_name()} ({t.count()}/{t.get_max_count()})\n'
         if buf:
-            self.send_msg(buf)
+            self.send_msg(buf, True)
         else:
-            self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n')
+            self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n', True)
 
     def join_room(self, r):
         if not r.add_session(self):
-            self.send_msg('Can\'t join the room...\n')
+            self.send_msg('Can\'t join the room...\n', True)
             return
         self.room = r.get_id()
         self.state = SessionState.ROOM
@@ -79,7 +81,7 @@ class Session:
         cmd, sep, args = cmd.partition(' ')
         match cmd:
             case SessionCmd.QUIT:
-                self.send_msg(f'Goodbye {self.name}!\n')
+                self.send_msg(f'Goodbye {self.name}!\n', True)
                 self.state = SessionState.FINISH
             case SessionCmd.HELP:
                 self.send_msg('Available commands:\n'
@@ -87,7 +89,7 @@ class Session:
                               f'\t\'{SessionCmd.HELP}\' to get this help\n'
                               f'\t\'{SessionCmd.NEW}\'  to make new room\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
-                              f'\t\'{SessionCmd.JOIN}\' to join the room\n')
+                              f'\t\'{SessionCmd.JOIN}\' to join the room\n', True)
             case SessionCmd.NEW:
                 self.new_room(r)
             case SessionCmd.LIST:
@@ -98,11 +100,11 @@ class Session:
                     if t := room.get_room_by_id(r, rid):
                         self.join_room(t)
                     else:
-                        self.send_msg('Wrong room id\n')
+                        self.send_msg('Wrong room id\n', True)
                 except:
-                    self.send_msg('Join usage: join [room_id]\n')
+                    self.send_msg('Join usage: join [room_id]\n', True)
             case _:
-                self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n')
+                self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n', True)
 
     def chat(self, buf, r):
         match buf:
@@ -112,14 +114,14 @@ class Session:
                 self.send_msg('Available commands:\n'
                               f'\t\'{ChatCmd.QUIT}\'   to quit the room\n'
                               f'\t\'{ChatCmd.HELP}\'   to get this help\n'
-                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n')
+                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n', True)
             case ChatCmd.ONLINE:
-                self.send_msg(r.get_online())
+                self.send_msg(r.get_online(), True)
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)
                 else:
-                    self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n')
+                    self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n', True)
 
     def handle(self, r, self_r):
         if not (buf := self.sd.recv(INBUFSIZE)):
