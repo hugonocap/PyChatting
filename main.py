@@ -1,4 +1,4 @@
-import sys, signal, select, socket
+import sys, select, socket
 
 INBUFSIZE = 1024
 LISTENQUEUE = 32
