@@ -1,10 +1,10 @@
 import session
 
 class Room:
-    def __init__(self, rid, sess):
+    def __init__(self, rid, sess_name):
         self.id = rid
-        self.name = f'{sess.name}\'s room'
-        self.sess = [sess]
+        self.name = f'{sess_name}\'s room'
+        self.sess = []
 
     def __del__(self):
         while self.sess:
@@ -12,6 +12,9 @@ class Room:
 
     def get_id(self):
         return self.id
+
+    def get_name(self):
+        return self.name
 
     def count(self):
         return len(self.sess)

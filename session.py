@@ -16,6 +16,7 @@ class SessionCmd:
     QUIT = 'quit'
     HELP = 'help'
     NEW  = 'new'
+    LIST = 'list'
 
 class ChatCmd:
     QUIT = '/quit'
@@ -48,9 +49,18 @@ class Session:
         self.send_msg(f'Welcome {name}!\n')
 
     def new_room(self, r):
-        t = room.Room(room.get_free_rid(r), self)
+        t = room.Room(room.get_free_rid(r), self.name)
         r.append(t)
         self.join_room(t)
+
+    def list_room(self, r):
+        buf = ''
+        for t in r:
+            buf += f'[{t.get_id()}] ({t.count()}) {t.get_name()}\n'
+        if buf:
+            self.send_msg(buf)
+        else:
+            self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n')
 
     def cmd(self, cmd, r):
         match cmd:
@@ -61,6 +71,8 @@ class Session:
                 self.send_msg('Sorry, this feature temporarily not implemented yet\n')
             case SessionCmd.NEW:
                 self.new_room(r)
+            case SessionCmd.LIST:
+                self.list_room(r)
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n')
 
