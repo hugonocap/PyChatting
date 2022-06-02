@@ -1,4 +1,6 @@
-import sys, socket, select
+from sys import stderr
+import socket
+from select import select
 
 import session
 
@@ -12,7 +14,7 @@ class Server:
             self.ls.bind((ip, port))
             self.ls.listen(LISTENQUEUE)
         except socket.error as err:
-            print(err, file=sys.stderr)
+            print(err, file=stderr)
             return
         self.sess = []
 
@@ -32,7 +34,7 @@ class Server:
 
         while True:
             try:
-                slist = select.select(rlist, [], [])
+                slist = select(rlist, [], [])
             except KeyboardInterrupt:
                 break
 
