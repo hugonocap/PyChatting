@@ -57,7 +57,7 @@ class Session:
     def list_room(self, r):
         buf = ''
         for t in r:
-            buf += f'[{t.get_id()}] ({t.count()}) {t.get_name()}\n'
+            buf += f'[{t.get_id()}] {t.get_name()} ({t.count()}/{t.get_max_count()})\n'
         if buf:
             self.send_msg(buf)
         else:
