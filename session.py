@@ -63,7 +63,10 @@ class Session:
         if not (buf := self.sd.recv(INBUFSIZE)):
             self.state = SessionState.ERROR
             return HandleReturn.FALSE
+
         self.buf += buf.decode()
+        if len(self.buf) >= INBUFSIZE:
+            return HandleReturn.FALSE
 
         buf, sep, self.buf = self.buf.partition('\r\n')
         if not sep:
