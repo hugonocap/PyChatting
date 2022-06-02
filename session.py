@@ -17,13 +17,14 @@ class Session:
         self.addr = connection[1]
         self.state = SessionState.START
         self.buf = ''
-        self.send_msg('Welcome!\nEnter your name: ')
+        self.send_msg('Welcome!\n'
+                      'Enter your name: ')
 
     def __del__(self):
         self.sd.close()
 
     def send_msg(self, msg):
-        self.sd.sendall(msg.encode())
+        self.sd.sendall(msg.replace('\n', '\r\n').encode())
 
     def login(self, buf):
         self.send_msg(f'Your name is {buf}, bye!\n')
