@@ -118,7 +118,10 @@ class Session:
             self.state = SessionState.ERROR
             return False
 
-        self.buf += buf.decode()
+        try:
+            self.buf += buf.decode()
+        except:
+            return False
         if len(self.buf) >= INBUFSIZE:
             return False
 
