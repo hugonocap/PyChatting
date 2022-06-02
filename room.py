@@ -49,3 +49,9 @@ def get_free_rid(r):
             break
         last = t.get_id()
     return last+1
+
+def get_room_by_id(r, rid):
+    for t in r:
+        if t.get_id() == rid:
+            return t
+    return None

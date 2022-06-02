@@ -17,6 +17,7 @@ class SessionCmd:
     HELP = 'help'
     NEW  = 'new'
     LIST = 'list'
+    JOIN = 'join'
 
 class ChatCmd:
     QUIT = '/quit'
@@ -62,7 +63,17 @@ class Session:
         else:
             self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n')
 
+    def join_room(self, r):
+        self.room = r.get_id()
+        self.state = SessionState.ROOM
+        r.add_session(self)
+
+    def leave_room(self):
+        self.room = -1
+        self.state = SessionState.CMD
+
     def cmd(self, cmd, r):
+        cmd, sep, args = cmd.partition(' ')
         match cmd:
             case SessionCmd.QUIT:
                 self.send_msg(f'Goodbye {self.name}!\n')
@@ -73,6 +84,15 @@ class Session:
                 self.new_room(r)
             case SessionCmd.LIST:
                 self.list_room(r)
+            case SessionCmd.JOIN:
+                try:
+                    rid = int(args)
+                    if t := room.get_room_by_id(r, rid):
+                        self.join_room(t)
+                    else:
+                        self.send_msg('Wrong room id\n')
+                except:
+                    self.send_msg('Join usage: join [room_id]\n')
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n')
 
@@ -115,12 +135,3 @@ class Session:
 
         return self.state != SessionState.FINISH and \
                self.state != SessionState.ERROR
-
-    def join_room(self, r):
-        self.room = r.get_id()
-        self.state = SessionState.ROOM
-        r.add_session(self)
-
-    def leave_room(self):
-        self.room = -1
-        self.state = SessionState.CMD
