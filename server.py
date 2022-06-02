@@ -44,7 +44,7 @@ class Server:
 
             for i in range(len(self.sess)):
                 if self.sess[i].get_sd() in slist[0]:
-                    res = self.sess[i].handle()
-                    if not res:
-                        rlist.remove(self.sess[i].get_sd())
-                        self.close_session(i)
+                    match self.sess[i].handle():
+                        case session.HandleReturn.FALSE:
+                            rlist.remove(self.sess[i].get_sd())
+                            self.close_session(i)
