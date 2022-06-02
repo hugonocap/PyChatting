@@ -82,7 +82,12 @@ class Session:
                 self.send_msg(f'Goodbye {self.name}!\n')
                 self.state = SessionState.FINISH
             case SessionCmd.HELP:
-                self.send_msg('Sorry, this feature temporarily not implemented yet\n')
+                self.send_msg('Available commands:\n'
+                              f'\t\'{SessionCmd.QUIT}\' to quit the server\n'
+                              f'\t\'{SessionCmd.HELP}\' to get this help\n'
+                              f'\t\'{SessionCmd.NEW}\'  to make new room\n'
+                              f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
+                              f'\t\'{SessionCmd.JOIN}\' to join the room\n')
             case SessionCmd.NEW:
                 self.new_room(r)
             case SessionCmd.LIST:
@@ -104,7 +109,10 @@ class Session:
             case ChatCmd.QUIT:
                 self.leave_room()
             case ChatCmd.HELP:
-                self.send_msg('Sorry, this feature temporarily not implemented yet\n')
+                self.send_msg('Available commands:\n'
+                              f'\t\'{ChatCmd.QUIT}\'   to quit the room\n'
+                              f'\t\'{ChatCmd.HELP}\'   to get this help\n'
+                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n')
             case ChatCmd.ONLINE:
                 self.send_msg(r.get_online())
             case _:
