@@ -4,6 +4,7 @@ class Room:
     def __init__(self, rid, sess_name):
         self.id = rid
         self.name = f'{sess_name}\'s room'
+        self.max_count = 1
         self.sess = []
 
     def __del__(self):
@@ -16,11 +17,17 @@ class Room:
     def get_name(self):
         return self.name
 
+    def get_max_count(self):
+        return self.max_count
+
     def count(self):
         return len(self.sess)
 
     def add_session(self, sess):
-        self.sess.append(sess)
+        if self.count() < self.max_count:
+            self.sess.append(sess)
+            return True
+        return False
 
     def remove_session(self, sess):
         self.sess.remove(sess)

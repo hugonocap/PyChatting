@@ -64,9 +64,11 @@ class Session:
             self.send_msg(f'No rooms are available, try \'{SessionCmd.NEW}\'\n')
 
     def join_room(self, r):
+        if not r.add_session(self):
+            self.send_msg('Can\'t join the room...\n')
+            return
         self.room = r.get_id()
         self.state = SessionState.ROOM
-        r.add_session(self)
 
     def leave_room(self):
         self.room = -1
