@@ -215,9 +215,15 @@ def partition_quotes(str):
 
     # Try to find quote from 1 position
     quote = str[0]
-    quote_pos = str.find(quote, 1)
-    if quote_pos == -1:
-        return (str, '')
+    start = 1
+    while True:
+        quote_pos = str.find(quote, start)
+        if quote_pos == -1:
+            return (str, '')
+        if str[quote_pos-1] == '\\':
+            start = quote_pos+1
+        else:
+            break
 
     # Try to get the rest of the string
     if quote_pos+2 < len(str):
@@ -225,4 +231,4 @@ def partition_quotes(str):
     else:
         other = ''
 
-    return (str[1:quote_pos], other)
+    return (str[1:quote_pos].replace('\\', ''), other)

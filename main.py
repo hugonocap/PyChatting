@@ -10,7 +10,6 @@ def main():
         print('Error. Usage: serv [ip] [port]', file=stderr)
         quit(1)
 
-
     serv = server.Server((ip, port))
     if not serv.init_success():
         quit(1)
