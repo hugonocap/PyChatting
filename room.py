@@ -15,6 +15,13 @@ class Room:
     def __is_owner(self, sess):
         return self.owner == sess.get_name()
 
+    def __check_owner(self):
+        for sess in self.sess:
+            if sess.get_name() == self.owner:
+                return
+        if self.sess:
+            self.owner = self.sess[0].get_name()
+
     def get_id(self):
         return self.id
 
@@ -59,6 +66,7 @@ class Room:
                 self.remove_session(self.sess[i])
             else:
                 i += 1
+        self.__check_owner()
 
     def send_msg(self, msg, exception, prefix=False):
         if prefix:
