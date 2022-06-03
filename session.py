@@ -65,7 +65,8 @@ class Session:
         count = len(r)
         buf = f'{count} rooms are available:\n'
         for t in r:
-            buf += f'[{t.get_id()}] {t.get_name()} ({t.count()}/{t.get_max_count()})\n'
+            buf += f'[{t.get_id()}] {t.get_name()} ' + \
+                   f'({t.count()}/{t.get_max_count()})\n'
         if count <= 0:
             buf += f'\tTry \'{SessionCmd.NEW}\' to make new room\n'
         self.send_msg(buf, True)
@@ -76,7 +77,8 @@ class Session:
         self.room = r.get_id()
         self.state = SessionState.ROOM
         self.send_msg(f'You have joined the room with {self.room} id. '
-                      f'Try \'{ChatCmd.HELP}\' to get available commands\n', True)
+                      f'Try \'{ChatCmd.HELP}\' to get available commands\n',
+                      True)
 
     def leave_room(self):
         self.room = -1
@@ -95,7 +97,8 @@ class Session:
                               f'\t\'{SessionCmd.HELP}\' to get this help\n'
                               f'\t\'{SessionCmd.NEW}\'  to make new room\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
-                              f'\t\'{SessionCmd.JOIN}\' to join the room\n', True)
+                              f'\t\'{SessionCmd.JOIN}\' to join the room\n',
+                              True)
             case SessionCmd.NEW:
                 self.new_room(r)
             case SessionCmd.LIST:
@@ -110,7 +113,8 @@ class Session:
                 except:
                     self.send_msg('Join usage: join [room_id]\n', True)
             case _:
-                self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n', True)
+                self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n',
+                              True)
 
     def chat(self, buf, r):
         match buf:
@@ -120,14 +124,16 @@ class Session:
                 self.send_msg('Available commands:\n'
                               f'\t\'{ChatCmd.QUIT}\'   to quit the room\n'
                               f'\t\'{ChatCmd.HELP}\'   to get this help\n'
-                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n', True)
+                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n',
+                              True)
             case ChatCmd.ONLINE:
                 self.send_msg(r.get_online(), True)
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)
                 else:
-                    self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n', True)
+                    self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n',
+                                  True)
 
     def handle(self, r, self_r):
         if not (buf := self.sd.recv(INBUFSIZE)):
