@@ -21,9 +21,12 @@ class Room:
                 return sess
         return None
 
+    def __set_owner(self, sess):
+        self.owner = sess.get_name()
+
     def __check_owner(self):
         if not self.__get_sess_by_name(self.owner) and self.sess:
-            self.owner = self.sess[0].get_name()
+            self.__set_owner(self.sess[0])
 
     def get_id(self):
         return self.id
@@ -67,6 +70,13 @@ class Room:
             self.kick(sess)
             if msg:
                 sess.send_msg(f'You were kicked with msg: {msg}\n', True)
+            return True
+        return False
+
+    def tranship_owner(self, who, whom):
+        if who == self.owner and (sess := self.__get_sess_by_name(whom)):
+            self.__set_owner(sess)
+            sess.send_msg(f'{who} transhiped you room owner\n', True)
             return True
         return False
 

@@ -24,6 +24,7 @@ class ChatCmd:
     HELP   = '/help'
     ONLINE = '/online'
     KICK   = '/kick'
+    OWNER  = '/owner'
 
 class Session:
     def __init__(self, connection):
@@ -174,6 +175,12 @@ class Session:
                 name, sep, msg = args.partition(' ')
                 if not r.owner_kick(self.name, name, msg):
                     self.send_msg(f'You can\'t kick\n', True)
+            case ChatCmd.OWNER:
+                if not args:
+                    self.send_msg(f'Owner usage: {ChatCmd.OWNER} [name]\n', True)
+                    return
+                if not r.tranship_owner(self.name, args):
+                    self.send_msg('You can\'t tranship the owner\n', True)
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)
