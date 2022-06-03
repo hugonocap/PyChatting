@@ -3,6 +3,7 @@ import session
 class Room:
     def __init__(self, rid, sess_name):
         self.id = rid
+        self.owner = sess_name
         self.name = f'{sess_name}\'s room'
         self.max_count = 5
         self.sess = []
@@ -10,6 +11,9 @@ class Room:
     def __del__(self):
         while self.sess:
             self.kick(self.sess[0])
+
+    def __is_owner(self, sess):
+        return self.owner == sess.get_name()
 
     def get_id(self):
         return self.id
@@ -26,7 +30,10 @@ class Room:
     def get_online(self):
         buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}):\n'
         for sess in self.sess:
-            buf += f'\t{sess.name}\n'
+            buf += f'\t{sess.name}'
+            if self.__is_owner(sess):
+                buf += ' *OWNER'
+            buf += '\n'
         return buf
 
     def add_session(self, sess):
