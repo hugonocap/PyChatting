@@ -59,8 +59,10 @@ class Session:
         try:
             self.buf += buf.decode()
         except:
+            self.state = SessionState.ERROR
             return False
         if len(self.buf) >= INBUFSIZE:
+            self.state = SessionState.ERROR
             return False
 
         buf, sep, self.buf = self.buf.partition('\r\n')
