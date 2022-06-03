@@ -11,7 +11,7 @@ def main():
         quit(1)
 
 
-    serv = server.Server(ip, port)
+    serv = server.Server((ip, port))
     if not serv.init_success():
         quit(1)
     serv.run()

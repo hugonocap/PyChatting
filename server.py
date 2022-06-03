@@ -7,13 +7,13 @@ import session, room
 LISTENQUEUE = 32
 
 class Server:
-    def __init__(self, ip, port):
+    def __init__(self, address):
         self.sess = []
         self.room = []
         try:
             self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.ls.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.ls.bind((ip, port))
+            self.ls.bind(address)
             self.ls.listen(LISTENQUEUE)
         except socket.error as err:
             self.ls.close()
