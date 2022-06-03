@@ -34,8 +34,8 @@ class Server:
                 break
 
             if self.ls in slist[0]:
-                self.__accept_client()
-                rlist.append(self.sess[len(self.sess)-1].sd)
+                if self.__accept_client():
+                    rlist.append(self.sess[len(self.sess)-1].sd)
 
             i = 0
             while i < len(self.sess):
@@ -50,7 +50,11 @@ class Server:
             self.__handle_room()
 
     def __accept_client(self):
-        self.sess.append(session.Session(self.ls.accept()))
+        try:
+            self.sess.append(session.Session(self.ls.accept()))
+            return True
+        except:
+            return False
 
     def __get_room_by_session(self, sess):
         rid = sess.get_room()
