@@ -130,7 +130,9 @@ class Session:
                 self.send_msg('Available commands:\n'
                               f'\t\'{SessionCmd.QUIT}\' to quit the server\n'
                               f'\t\'{SessionCmd.HELP}\' to get this help\n'
-                              f'\t\'{SessionCmd.NEW}\'  to make new room\n'
+                              f'\t\'{SessionCmd.NEW}\'  to make default room\n'
+                              f'\t\'{SessionCmd.NEW}\'  [$pass or '
+                               '\'nopass\'] [$max_count]\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
                               f'\t\'{SessionCmd.JOIN}\' to join the room\n',
                               True)
