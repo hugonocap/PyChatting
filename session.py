@@ -94,7 +94,7 @@ class Session:
     def __new_room(self, r, password='nopass', max_count=5):
         t = room.Room(room.get_free_rid(r), self.name, password, max_count)
         r.append(t)
-        self.__join_room(t)
+        self.__join_room(t, password)
 
     def __list_room(self, r):
         count = len(r)
@@ -105,7 +105,10 @@ class Session:
             buf += f'\tTry \'{SessionCmd.NEW}\' to make new room\n'
         self.send_msg(buf, True)
 
-    def __join_room(self, r):
+    def __join_room(self, r, password='nopass'):
+        if not r.check_password(password):
+            self.send_msg('Wrong password\n')
+            return
         if not r.add_session(self):
             self.send_msg('Can\'t join the room...\n', True)
             return
@@ -146,13 +149,17 @@ class Session:
                 self.__list_room(r)
             case SessionCmd.JOIN:
                 try:
-                    rid = int(args)
-                    if t := room.get_room_by_id(r, rid):
-                        self.__join_room(t)
+                    rid, sep, password = args.partition(' ')
+                    if t := room.get_room_by_id(r, int(rid)):
+                        if password:
+                            self.__join_room(t, password)
+                        else:
+                            self.__join_room(t)
                     else:
                         self.send_msg('Wrong room id\n', True)
                 except:
-                    self.send_msg('Join usage: join [room_id]\n', True)
+                    self.send_msg(f'Join usage: {SessionCmd.JOIN} [room_id] '
+                                   '[optional $pass]\n', True)
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n',
                               True)

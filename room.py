@@ -39,6 +39,9 @@ class Room:
     def has_password(self):
         return self.password != 'nopass'
 
+    def check_password(self, password):
+        return not self.has_password() or self.password == password
+
     def get_max_count(self):
         return self.max_count
 
