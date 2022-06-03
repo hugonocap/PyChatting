@@ -162,7 +162,9 @@ class Session:
                               f'\t\'{ChatCmd.HELP}\'   to get this help\n'
                               f'\t\'{ChatCmd.ONLINE}\' to get users online\n'
                               f'\t\'{ChatCmd.KICK}\' [name] [optional msg] '
-                               'to kick user\n',
+                               'to kick user\n'
+                              f'\t\'{ChatCmd.OWNER}\' [name] to tranship '
+                               'the owner\n',
                               True)
             case ChatCmd.ONLINE:
                 self.send_msg(r.get_online(), True)
