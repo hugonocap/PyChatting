@@ -1,13 +1,18 @@
-from sys import argv
+from sys import argv, stderr
 
 import server
 
 def main():
-    if len(argv) < 3:
-        print('Error. Usage: serv [ip] [port]', file=sys.stderr)
+    try:
+        ip = argv[1]
+        port = int(argv[2])
+    except:
+        print('Error. Usage: serv [ip] [port]', file=stderr)
         quit(1)
 
-    if not (serv := server.Server(argv[1], int(argv[2]))):
+
+    serv = server.Server(ip, port)
+    if not serv.init_success():
         quit(1)
     serv.run()
     del serv

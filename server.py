@@ -8,21 +8,25 @@ LISTENQUEUE = 32
 
 class Server:
     def __init__(self, ip, port):
+        self.sess = []
+        self.room = []
         try:
             self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.ls.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.ls.bind((ip, port))
             self.ls.listen(LISTENQUEUE)
         except socket.error as err:
+            self.ls.close()
             print(err, file=stderr)
             return
-        self.sess = []
-        self.room = []
 
     def __del__(self):
         self.ls.close()
         while self.sess:
             self.__close_session(0)
+
+    def init_success(self):
+        return self.ls.fileno() > -1
 
     def run(self):
         rlist = [self.ls]
