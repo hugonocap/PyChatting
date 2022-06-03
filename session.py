@@ -137,7 +137,10 @@ class Session:
                               f'\t\'{SessionCmd.NEW}\'  [$pass or '
                                '\'nopass\'] [$max_count]\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
-                              f'\t\'{SessionCmd.JOIN}\' to join the room\n',
+                              f'\t\'{SessionCmd.JOIN}\' to join the room '
+                               'without a password\n'
+                              f'\t\'{SessionCmd.JOIN}\' [room id] '
+                                '[optional $pass]\n',
                               True)
             case SessionCmd.NEW:
                 password, sep, max_count = args.partition(' ')
@@ -158,7 +161,7 @@ class Session:
                     else:
                         self.send_msg('Wrong room id\n', True)
                 except:
-                    self.send_msg(f'Join usage: {SessionCmd.JOIN} [room_id] '
+                    self.send_msg(f'Join usage: {SessionCmd.JOIN} [room id] '
                                    '[optional $pass]\n', True)
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n',
