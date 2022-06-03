@@ -23,6 +23,7 @@ class ChatCmd:
     QUIT   = '/quit'
     HELP   = '/help'
     ONLINE = '/online'
+    KICK   = '/kick'
 
 class Session:
     def __init__(self, connection):
@@ -150,7 +151,8 @@ class Session:
                               True)
 
     def __chat(self, buf, r):
-        match buf:
+        cmd, sep, args = buf.partition(' ')
+        match cmd:
             case ChatCmd.QUIT:
                 r.kick(self)
             case ChatCmd.HELP:
@@ -161,6 +163,12 @@ class Session:
                               True)
             case ChatCmd.ONLINE:
                 self.send_msg(r.get_online(), True)
+            case ChatCmd.KICK:
+                if not args:
+                    self.send_msg(f'Kick usage: /kick [name]\n', True)
+                    return
+                if not r.owner_kick(self.name, args):
+                    self.send_msg(f'You can\'t kick\n', True)
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)

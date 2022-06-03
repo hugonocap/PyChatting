@@ -15,11 +15,14 @@ class Room:
     def __is_owner(self, sess):
         return self.owner == sess.get_name()
 
-    def __check_owner(self):
+    def __get_sess_by_name(self, sess_name):
         for sess in self.sess:
-            if sess.get_name() == self.owner:
-                return
-        if self.sess:
+            if sess.get_name() == sess_name:
+                return sess
+        return None
+
+    def __check_owner(self):
+        if not self.__get_sess_by_name(self.owner) and self.sess:
             self.owner = self.sess[0].get_name()
 
     def get_id(self):
@@ -58,6 +61,14 @@ class Room:
     def kick(self, sess):
         sess.leave_room()
         self.remove_session(sess)
+
+    def owner_kick(self, who, whom, msg=''):
+        if who == self.owner and (sess := self.__get_sess_by_name(whom)):
+            self.kick(sess)
+            if msg:
+                self.send_msg(f'You were kicked with msg: {msg}')
+            return True
+        return False
 
     def refresh(self):
         i = 0
