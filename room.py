@@ -27,6 +27,7 @@ class Room:
     def __check_owner(self):
         if not self.__get_sess_by_name(self.owner) and self.sess:
             self.__set_owner(self.sess[0])
+            self.sess[0].send_msg('You are room owner now\n', True)
 
     def get_id(self):
         return self.id
