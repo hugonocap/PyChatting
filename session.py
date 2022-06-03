@@ -100,8 +100,12 @@ class Session:
         count = len(r)
         buf = f'{count} rooms are available:\n'
         for t in r:
-            buf += f'[{t.get_id()}] {t.get_name()} ' + \
-                   f'({t.count()}/{t.get_max_count()})\n'
+            buf += f'[{t.get_id()}] {t.get_name()} '     + \
+                   f'({t.count()}/{t.get_max_count()}) '
+            if t.has_password():
+                buf += 'PASSWORD\n'
+            else:
+                buf += 'NO PASSWORD\n'
         if count <= 0:
             buf += f'\tTry \'{SessionCmd.NEW}\' to make new room\n'
         self.send_msg(buf, True)
