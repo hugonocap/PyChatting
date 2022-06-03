@@ -159,7 +159,9 @@ class Session:
                 self.send_msg('Available commands:\n'
                               f'\t\'{ChatCmd.QUIT}\'   to quit the room\n'
                               f'\t\'{ChatCmd.HELP}\'   to get this help\n'
-                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n',
+                              f'\t\'{ChatCmd.ONLINE}\' to get users online\n'
+                              f'\t\'{ChatCmd.KICK}\' [name] [optional msg] '
+                               'to kick user\n',
                               True)
             case ChatCmd.ONLINE:
                 self.send_msg(r.get_online(), True)
