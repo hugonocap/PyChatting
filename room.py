@@ -1,10 +1,10 @@
 import session
 
 class Room:
-    def __init__(self, rid, owner, password, max_count):
+    def __init__(self, rid, owner, name, password, max_count):
         self.id = rid
         self.owner = owner
-        self.name = f'{owner}\'s room'
+        self.name = name
         self.password = password
         self.max_count = max_count
         self.sess = []

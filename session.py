@@ -91,7 +91,9 @@ class Session:
         self.send_msg(f'Welcome {name}! Try \'{SessionCmd.HELP}\' to '
                        'list the available commands\n', True)
 
-    def __new_room(self, r, password='nopass', max_count=5):
+    def __new_room(self, r, name='', password='nopass', max_count=5):
+        if not name:
+            name = f'{self.name}\'s room'
         t = room.Room(room.get_free_rid(r), self.name, password, max_count)
         r.append(t)
         self.__join_room(t, password)
@@ -143,9 +145,10 @@ class Session:
                                 '[optional $pass]\n',
                               True)
             case SessionCmd.NEW:
+                name, args = partition_quotes(args)
                 password, sep, max_count = args.partition(' ')
                 try:
-                    self.__new_room(r, password, int(max_count))
+                    self.__new_room(r, name, password, int(max_count))
                 except:
                     self.__new_room(r)
             case SessionCmd.LIST:
@@ -205,3 +208,21 @@ class Session:
                 else:
                     self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n',
                                   True)
+
+def partition_quotes(str):
+    if (len(str) < 2) or (str[0] not in ['\'', '"']):
+        return (str, '')
+
+    # Try to find quote from 1 position
+    quote = str[0]
+    quote_pos = str.find(quote, 1)
+    if quote_pos == -1:
+        return (str, '')
+
+    # Try to get the rest of the string
+    if quote_pos+2 < len(str):
+        other = str[quote_pos+2:]
+    else:
+        other = ''
+
+    return (str[1:quote_pos], other)
