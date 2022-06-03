@@ -23,6 +23,12 @@ class Room:
     def count(self):
         return len(self.sess)
 
+    def get_online(self):
+        buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}):\n'
+        for sess in self.sess:
+            buf += f'\t{sess.name}\n'
+        return buf
+
     def add_session(self, sess):
         if self.count() < self.max_count:
             self.sess.append(sess)
@@ -53,12 +59,6 @@ class Room:
         for sess in self.sess:
             if sess != exception:
                 sess.send_msg(msg)
-
-    def get_online(self):
-        buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}):\n'
-        for sess in self.sess:
-            buf += f'\t{sess.name}\n'
-        return buf
 
 def get_free_rid(r):
     last = -1
