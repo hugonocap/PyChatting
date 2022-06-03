@@ -46,7 +46,11 @@ class Room:
         return len(self.sess)
 
     def get_online(self):
-        buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}):\n'
+        buf = f'[{self.id}] {self.name} ({self.count()}/{self.max_count}) '
+        if self.has_password():
+            buf += 'PASSWORD:\n'
+        else:
+            buf += 'NO PASSWORD:\n'
         for sess in self.sess:
             buf += f'\t{sess.name}'
             if self.__is_owner(sess):
