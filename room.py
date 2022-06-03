@@ -55,7 +55,7 @@ class Room:
 
     def send_msg(self, msg, exception, prefix=False):
         if prefix:
-            msg = '> ' + msg
+            msg = '\n> ' + msg
         for sess in self.sess:
             if sess != exception:
                 sess.send_msg(msg)
