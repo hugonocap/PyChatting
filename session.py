@@ -136,13 +136,17 @@ class Session:
                               f'\t\'{SessionCmd.QUIT}\' to quit the server\n'
                               f'\t\'{SessionCmd.HELP}\' to get this help\n'
                               f'\t\'{SessionCmd.NEW}\'  to make default room\n'
-                              f'\t\'{SessionCmd.NEW}\'  [$pass or '
-                               '\'nopass\'] [$max_count]\n'
+                              f'\t\'{SessionCmd.NEW}\'  [$name in \'quotes\'] '
+                               '[$pass or nopass] [$max_count]\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
                               f'\t\'{SessionCmd.JOIN}\' to join the room '
                                'without a password\n'
                               f'\t\'{SessionCmd.JOIN}\' [room id] '
-                                '[optional $pass]\n',
+                               '[optional $pass]\n'
+                               '\n\tYou have to write room name in '
+                               'quotes: (\' and \").\n'
+                               '\tYou can also add backslash to add quote\n'
+                               '\tin your room name like "\\"room\\"".\n',
                               True)
             case SessionCmd.NEW:
                 name, args = partition_quotes(args)
