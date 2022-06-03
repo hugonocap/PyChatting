@@ -94,7 +94,7 @@ class Session:
     def __new_room(self, r, name='', password='nopass', max_count=5):
         if not name:
             name = f'{self.name}\'s room'
-        t = room.Room(room.get_free_rid(r), self.name, password, max_count)
+        t = room.Room(room.get_free_rid(r), self.name, name, password, max_count)
         r.append(t)
         self.__join_room(t, password)
 
