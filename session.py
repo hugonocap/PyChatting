@@ -165,9 +165,12 @@ class Session:
                 self.send_msg(r.get_online(), True)
             case ChatCmd.KICK:
                 if not args:
-                    self.send_msg(f'Kick usage: /kick [name]\n', True)
+                    self.send_msg(f'Kick usage: {ChatCmd.KICK} [name] '
+                                   '[optional msg]\n',
+                                  True)
                     return
-                if not r.owner_kick(self.name, args):
+                name, sep, msg = args.partition(' ')
+                if not r.owner_kick(self.name, name, msg):
                     self.send_msg(f'You can\'t kick\n', True)
             case _:
                 if buf and buf[0] != '/':

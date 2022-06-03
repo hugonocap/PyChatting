@@ -66,7 +66,7 @@ class Room:
         if who == self.owner and (sess := self.__get_sess_by_name(whom)):
             self.kick(sess)
             if msg:
-                self.send_msg(f'You were kicked with msg: {msg}')
+                sess.send_msg(f'You were kicked with msg: {msg}\n', True)
             return True
         return False
 
