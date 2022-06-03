@@ -1,5 +1,6 @@
 import socket
 
+from common import *
 import room
 
 INBUFSIZE = 1024
@@ -8,9 +9,9 @@ class SessionState:
     START    = 1
     LOGIN    = START
     CMD      = 2
-    ROOM     = 6
-    FINISH   = 3
-    ERROR    = 4
+    ROOM     = 3
+    FINISH   = 4
+    ERROR    = 5
 
 class SessionCmd:
     QUIT = 'quit'
@@ -25,6 +26,7 @@ class ChatCmd:
     ONLINE = '/online'
     KICK   = '/kick'
     OWNER  = '/owner'
+    SET    = '/set'
 
 class Session:
     def __init__(self, connection):
@@ -206,33 +208,18 @@ class Session:
                     return
                 if not r.tranship_owner(self.name, args):
                     self.send_msg('You can\'t tranship the owner\n', True)
+            case ChatCmd.SET:
+                var, sep, val = args.partition(' ')
+                if val:
+                    if not r.set_var(self, var, val):
+                        self.send_msg('You can\'t set variable for this '
+                                      'room\n', True)
+                else:
+                    self.send_msg(f'Set usage: {ChatCmd.SET} [$variable] '
+                                   '[$value]\n', True)
             case _:
                 if buf and buf[0] != '/':
                     r.send_msg(f'\n>> {self.name}: {buf}\n', self)
                 else:
                     self.send_msg(f'Invalid command, try \'{ChatCmd.HELP}\'\n',
                                   True)
-
-def partition_quotes(str):
-    if (len(str) < 2) or (str[0] not in ['\'', '"']):
-        return (str, '')
-
-    # Try to find quote from 1 position
-    quote = str[0]
-    start = 1
-    while True:
-        quote_pos = str.find(quote, start)
-        if quote_pos == -1:
-            return (str, '')
-        if str[quote_pos-1] == '\\':
-            start = quote_pos+1
-        else:
-            break
-
-    # Try to get the rest of the string
-    if quote_pos+2 < len(str):
-        other = str[quote_pos+2:]
-    else:
-        other = ''
-
-    return (str[1:quote_pos].replace('\\', ''), other)
