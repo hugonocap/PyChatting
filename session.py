@@ -108,6 +108,7 @@ class Session:
     def __join_room(self, r):
         if not r.add_session(self):
             self.send_msg('Can\'t join the room...\n', True)
+            return
         self.room = r.get_id()
         self.state = SessionState.ROOM
         self.send_msg(f'You have joined the room with {self.room} id. '
