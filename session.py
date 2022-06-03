@@ -152,7 +152,7 @@ class Session:
     def __chat(self, buf, r):
         match buf:
             case ChatCmd.QUIT:
-                self.leave_room()
+                r.kick(self)
             case ChatCmd.HELP:
                 self.send_msg('Available commands:\n'
                               f'\t\'{ChatCmd.QUIT}\'   to quit the room\n'
