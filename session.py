@@ -109,7 +109,7 @@ class Session:
 
     def __join_room(self, r, password='nopass'):
         if not r.check_password(password):
-            self.send_msg('Wrong password\n')
+            self.send_msg('Wrong password\n', True)
             return
         if not r.add_session(self):
             self.send_msg('Can\'t join the room...\n', True)
