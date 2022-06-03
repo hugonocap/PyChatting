@@ -1,11 +1,12 @@
 import session
 
 class Room:
-    def __init__(self, rid, sess_name):
+    def __init__(self, rid, owner, password, max_count):
         self.id = rid
-        self.owner = sess_name
-        self.name = f'{sess_name}\'s room'
-        self.max_count = 5
+        self.owner = owner
+        self.name = f'{owner}\'s room'
+        self.password = password
+        self.max_count = max_count
         self.sess = []
 
     def __del__(self):

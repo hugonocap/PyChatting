@@ -91,8 +91,8 @@ class Session:
         self.send_msg(f'Welcome {name}! Try \'{SessionCmd.HELP}\' to '
                        'list the available commands\n', True)
 
-    def __new_room(self, r):
-        t = room.Room(room.get_free_rid(r), self.name)
+    def __new_room(self, r, password='nopass', max_count=5):
+        t = room.Room(room.get_free_rid(r), self.name, password, max_count)
         r.append(t)
         self.__join_room(t)
 
@@ -135,7 +135,11 @@ class Session:
                               f'\t\'{SessionCmd.JOIN}\' to join the room\n',
                               True)
             case SessionCmd.NEW:
-                self.__new_room(r)
+                password, sep, max_count = args.partition(' ')
+                try:
+                    self.__new_room(r, password, int(max_count))
+                except:
+                    self.__new_room(r)
             case SessionCmd.LIST:
                 self.__list_room(r)
             case SessionCmd.JOIN:
