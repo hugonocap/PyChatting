@@ -139,9 +139,9 @@ class Session:
                               f'\t\'{SessionCmd.NEW}\'  [$name in \'quotes\'] '
                                '[$pass or nopass] [$max_count]\n'
                               f'\t\'{SessionCmd.LIST}\' to list all rooms\n'
-                              f'\t\'{SessionCmd.JOIN}\' to join the room '
-                               'without a password\n'
-                              f'\t\'{SessionCmd.JOIN}\' [room id] '
+                              f'\t\'{SessionCmd.JOIN}\' [$room_id] to join '
+                               'the room without a password\n'
+                              f'\t\'{SessionCmd.JOIN}\' [$room_id] '
                                '[optional $pass]\n'
                                '\n\tYou have to write room name in '
                                'quotes: (\' and \").\n'
@@ -168,7 +168,7 @@ class Session:
                     else:
                         self.send_msg('Wrong room id\n', True)
                 except:
-                    self.send_msg(f'Join usage: {SessionCmd.JOIN} [room id] '
+                    self.send_msg(f'Join usage: {SessionCmd.JOIN} [$room_id] '
                                    '[optional $pass]\n', True)
             case _:
                 self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n',
