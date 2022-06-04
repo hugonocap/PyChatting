@@ -14,7 +14,6 @@ def main():
     if not serv.init_success():
         quit(1)
     serv.run()
-    del serv
 
     quit()
 
