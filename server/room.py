@@ -100,6 +100,7 @@ class Room:
         self.remove_session(sess)
 
     def owner_kick(self, who, whom_id, msg=''):
+        msg, tmp = partition_quotes(msg)
         found = False
         for sess in self.sess:
             if sess.get_id() == whom_id:
