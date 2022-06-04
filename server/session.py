@@ -223,7 +223,7 @@ class Session:
                 self.send_msg(f'You can\'t kick\n', True)
         elif cmd == ChatCmd.OWNER:
             if not args:
-                self.send_msg(f'Owner usage: {ChatCmd.OWNER} [name]\n', True)
+                self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$name]\n', True)
                 return
             if not r.tranship_owner(self.name, args):
                 self.send_msg('You can\'t tranship the owner\n', True)
