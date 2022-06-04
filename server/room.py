@@ -99,8 +99,14 @@ class Room:
         sess.leave_room()
         self.remove_session(sess)
 
-    def owner_kick(self, who, whom, msg=''):
-        sess = self.__get_sess_by_name(whom)
+    def owner_kick(self, who, whom_id, msg=''):
+        found = False
+        for sess in self.sess:
+            if sess.get_id() == whom_id:
+                found = True
+                break
+        if not found:
+            return False
         if who == self.owner and sess:
             self.kick(sess)
             if msg:

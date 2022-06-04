@@ -45,6 +45,9 @@ class Session:
     def get_sd(self):
         return self.sd
 
+    def get_id(self):
+        return self.id
+
     def get_name(self):
         return self.name
 
@@ -202,12 +205,21 @@ class Session:
             self.send_msg(r.get_online(), True)
         elif cmd == ChatCmd.KICK:
             if not args:
-                self.send_msg(f'Kick usage: {ChatCmd.KICK} [name] '
-                               '[optional msg]\n',
+                self.send_msg(f'Kick usage: {ChatCmd.KICK} [$id] '
+                               '[optional $msg in \'quotes\']\n',
                               True)
                 return
-            name, sep, msg = args.partition(' ')
-            if not r.owner_kick(self.name, name, msg):
+
+            sess_id, sep, msg = args.partition(' ')
+            try:
+                sess_id = int(sess_id)
+            except:
+                self.send_msg(f'Kick usage: {ChatCmd.KICK} [$id] '
+                               '[optional $msg in \'quotes\']\n',
+                              True)
+                return
+
+            if not r.owner_kick(self.name, sess_id, msg):
                 self.send_msg(f'You can\'t kick\n', True)
         elif cmd == ChatCmd.OWNER:
             if not args:
