@@ -122,9 +122,11 @@ class Session:
         if not r.check_password(password):
             self.send_msg('Wrong password\n', True)
             return
+
         if not r.add_session(self):
             self.send_msg('Can\'t join the room...\n', True)
             return
+
         self.room = r.get_id()
         self.state = SessionState.ROOM
         self.send_msg(f'You have joined the room with {self.room} id. '
@@ -138,6 +140,7 @@ class Session:
 
     def __cmd(self, cmd, r):
         cmd, sep, args = cmd.partition(' ')
+
         if cmd == SessionCmd.QUIT:
             self.send_msg(f'Goodbye {self.name}!\n', True)
             self.state = SessionState.FINISH
@@ -171,22 +174,24 @@ class Session:
             try:
                 rid, sep, password = args.partition(' ')
                 t = room.get_room_by_id(r, int(rid))
-                if t:
-                    if password:
-                        self.__join_room(t, password)
-                    else:
-                        self.__join_room(t)
-                else:
-                    self.send_msg('Wrong room id\n', True)
             except:
                 self.send_msg(f'Join usage: {SessionCmd.JOIN} [$room_id] '
                                '[optional $pass]\n', True)
+                return
+            if t:
+                if password:
+                    self.__join_room(t, password)
+                else:
+                    self.__join_room(t)
+            else:
+                self.send_msg('Wrong room id\n', True)
         else:
             self.send_msg(f'Invalid command, try \'{SessionCmd.HELP}\'\n',
                           True)
 
     def __chat(self, buf, r):
         cmd, sep, args = buf.partition(' ')
+
         if cmd == ChatCmd.QUIT:
             r.kick(self)
         elif cmd == ChatCmd.HELP:
@@ -225,11 +230,13 @@ class Session:
             if not args:
                 self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$id]\n', True)
                 return
+
             try:
                 whom = int(args)
             except:
                 self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$id]\n', True)
                 return
+
             if not r.tranship_owner(self.id, whom):
                 self.send_msg('You can\'t tranship the owner\n', True)
         elif cmd == ChatCmd.SET:

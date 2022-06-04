@@ -74,6 +74,7 @@ class Room:
     def set_var(self, sid, var, val):
         if not self.__is_owner(sid):
             return False
+
         if var == RoomVariable.NAME:
             val, tmp = partition_quotes(val)
             self.name = val
@@ -81,6 +82,7 @@ class Room:
             self.password = val
         elif var == RoomVariable.MAX_COUNT:
             self.max_count = val
+
         return True
 
     def add_session(self, sess):
@@ -102,6 +104,7 @@ class Room:
     def owner_kick(self, who, whom, msg=''):
         msg, tmp = partition_quotes(msg)
         sess = self.__get_sess_by_id(whom)
+
         if who == self.owner and sess:
             self.kick(sess)
             if msg:
