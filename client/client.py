@@ -14,8 +14,12 @@ class Client:
             quit(1)
 
     def __handle_recv(self):
-        while buf := self.sd.recv(INBUFSIZE):
+        while True:
+            buf = self.sd.recv(INBUFSIZE)
+            if not buf:
+                break
             print(buf.decode(), end='', flush=True)
+        self.sd.close()
         print('Server closed the connection, try ENTER to quit')
 
     def init_success(self):
@@ -25,6 +29,9 @@ class Client:
         recv_thread = Thread(target=self.__handle_recv)
         recv_thread.start()
 
-        while buf := input():
-            self.sd.sendall(f'{buf}\r\n'.encode())
-        self.sd.close()
+        while True:
+            buf = input()
+            try:
+                self.sd.sendall(f'{buf}\r\n'.encode())
+            except:
+                break
