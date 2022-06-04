@@ -74,14 +74,13 @@ class Room:
     def set_var(self, sess, var, val):
         if not self.__is_owner(sess):
             return False
-        match var:
-            case RoomVariable.NAME:
-                val, tmp = partition_quotes(val)
-                self.name = val
-            case RoomVariable.PASS:
-                self.password = val
-            case RoomVariable.MAX_COUNT:
-                self.max_count = val
+        if var == RoomVariable.NAME:
+            val, tmp = partition_quotes(val)
+            self.name = val
+        elif var == RoomVariable.PASS:
+            self.password = val
+        elif var == RoomVariable.MAX_COUNT:
+            self.max_count = val
         return True
 
     def add_session(self, sess):
