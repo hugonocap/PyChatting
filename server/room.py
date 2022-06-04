@@ -20,20 +20,20 @@ class Room:
             self.kick(self.sess[0])
 
     def __is_owner(self, sess):
-        return self.owner == sess.get_name()
+        return self.owner == sess.get_id()
 
-    def __get_sess_by_name(self, sess_name):
+    def __get_sess_by_id(self, sid):
         for sess in self.sess:
-            if sess.get_name() == sess_name:
+            if sess.get_id() == sid:
                 return sess
         return None
 
-    def __set_owner(self, sess):
-        self.owner = sess.get_name()
+    def __set_owner(self, sid):
+        self.owner = sid
 
     def __check_owner(self):
-        if not self.__get_sess_by_name(self.owner) and self.sess:
-            self.__set_owner(self.sess[0])
+        if not self.__get_sess_by_id(self.owner) and self.sess:
+            self.__set_owner(self.sess[0].get_id())
             self.sess[0].send_msg('You are room owner now\n', True)
 
     def get_id(self):
@@ -71,8 +71,8 @@ class Room:
             buf += '\n'
         return buf
 
-    def set_var(self, sess, var, val):
-        if not self.__is_owner(sess):
+    def set_var(self, sid, var, val):
+        if not self.__is_owner(sid):
             return False
         if var == RoomVariable.NAME:
             val, tmp = partition_quotes(val)
@@ -99,15 +99,9 @@ class Room:
         sess.leave_room()
         self.remove_session(sess)
 
-    def owner_kick(self, who, whom_id, msg=''):
+    def owner_kick(self, who, whom, msg=''):
         msg, tmp = partition_quotes(msg)
-        found = False
-        for sess in self.sess:
-            if sess.get_id() == whom_id:
-                found = True
-                break
-        if not found:
-            return False
+        sess = self.__get_sess_by_id(whom)
         if who == self.owner and sess:
             self.kick(sess)
             if msg:
@@ -116,7 +110,7 @@ class Room:
         return False
 
     def tranship_owner(self, who, whom):
-        sess = self.__get_sess_by_name(whom)
+        sess = self.__get_sess_by_id(whom)
         if who == self.owner and sess:
             self.__set_owner(sess)
             sess.send_msg(f'{who} transhiped you room owner\n', True)

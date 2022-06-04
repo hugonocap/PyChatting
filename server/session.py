@@ -105,7 +105,7 @@ class Session:
     def __new_room(self, r, name='', password='nopass', max_count=5):
         if not name:
             name = f'{self.name}\'s room'
-        t = room.Room(room.get_free_rid(r), self.name, name, password, max_count)
+        t = room.Room(room.get_free_rid(r), self.id, name, password, max_count)
         r.append(t)
         self.__join_room(t, password)
 
@@ -196,7 +196,7 @@ class Session:
                           f'\t\'{ChatCmd.ONLINE}\' to get users online\n'
                           f'\t\'{ChatCmd.KICK}\'   [$id] [optional $msg '
                            'in \'quotes\'] to kick user\n'
-                          f'\t\'{ChatCmd.OWNER}\'  [$name] to tranship '
+                          f'\t\'{ChatCmd.OWNER}\'  [$id] to tranship '
                            'the owner\n'
                           f'\t\'{ChatCmd.SET}\'    '
                            '[$name or $pass or $max_count] [$value]\n',
@@ -223,9 +223,14 @@ class Session:
                 self.send_msg(f'You can\'t kick\n', True)
         elif cmd == ChatCmd.OWNER:
             if not args:
-                self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$name]\n', True)
+                self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$id]\n', True)
                 return
-            if not r.tranship_owner(self.name, args):
+            try:
+                whom = int(args)
+            except:
+                self.send_msg(f'Owner usage: {ChatCmd.OWNER} [$id]\n', True)
+                return
+            if not r.tranship_owner(self.id, whom):
                 self.send_msg('You can\'t tranship the owner\n', True)
         elif cmd == ChatCmd.SET:
             var, sep, val = args.partition(' ')
