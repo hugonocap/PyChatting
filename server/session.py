@@ -56,9 +56,14 @@ class Session:
         self.sd.sendall(msg.replace('\n', '\r\n').encode())
 
     def handle(self, r, self_r):
-        buf = self.sd.recv(INBUFSIZE)
+        try:
+            buf = self.sd.recv(INBUFSIZE)
+        except:
+            self.state = SessionState.FINISH
+            return False
+
         if not buf:
-            self.state = SessionState.ERROR
+            self.state = SessionState.FINISH
             return False
 
         try:
