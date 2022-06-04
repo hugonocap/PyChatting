@@ -68,7 +68,8 @@ class Server:
         return None
 
     def __close_session(self, i):
-        if r := self.__get_room_by_session(self.sess[i]):
+        r = self.__get_room_by_session(self.sess[i])
+        if r:
             r.kick(self.sess[i])
         self.sess.pop(i)
 

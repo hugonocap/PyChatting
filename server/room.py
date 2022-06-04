@@ -101,7 +101,8 @@ class Room:
         self.remove_session(sess)
 
     def owner_kick(self, who, whom, msg=''):
-        if who == self.owner and (sess := self.__get_sess_by_name(whom)):
+        sess = self.__get_sess_by_name(whom)
+        if who == self.owner and sess:
             self.kick(sess)
             if msg:
                 sess.send_msg(f'You were kicked with msg: {msg}\n', True)
@@ -109,7 +110,8 @@ class Room:
         return False
 
     def tranship_owner(self, who, whom):
-        if who == self.owner and (sess := self.__get_sess_by_name(whom)):
+        sess = self.__get_sess_by_name(whom)
+        if who == self.owner and sess:
             self.__set_owner(sess)
             sess.send_msg(f'{who} transhiped you room owner\n', True)
             return True

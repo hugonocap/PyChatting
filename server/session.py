@@ -56,7 +56,8 @@ class Session:
         self.sd.sendall(msg.replace('\n', '\r\n').encode())
 
     def handle(self, r, self_r):
-        if not (buf := self.sd.recv(INBUFSIZE)):
+        buf = self.sd.recv(INBUFSIZE)
+        if not buf:
             self.state = SessionState.ERROR
             return False
 
@@ -162,7 +163,8 @@ class Session:
             case SessionCmd.JOIN:
                 try:
                     rid, sep, password = args.partition(' ')
-                    if t := room.get_room_by_id(r, int(rid)):
+                    t = room.get_room_by_id(r, int(rid))
+                    if t:
                         if password:
                             self.__join_room(t, password)
                         else:
