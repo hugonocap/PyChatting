@@ -219,7 +219,7 @@ class Session:
                               True)
                 return
 
-            if not r.owner_kick(self.name, sess_id, msg):
+            if not r.owner_kick(self.id, sess_id, msg):
                 self.send_msg(f'You can\'t kick\n', True)
         elif cmd == ChatCmd.OWNER:
             if not args:
