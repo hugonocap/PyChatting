@@ -65,7 +65,7 @@ class Room:
     def get_online(self):
         buf = f'{self.get_info()}:\n'
         for sess in self.sess:
-            buf += f'\t{sess.name}'
+            buf += f'\t[{sess.id}] {sess.name}'
             if self.__is_owner(sess):
                 buf += ' *OWNER'
             buf += '\n'

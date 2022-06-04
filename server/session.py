@@ -32,6 +32,7 @@ class Session:
     def __init__(self, connection):
         self.sd   = connection[0]
         self.addr = connection[1]
+        self.id = self.sd.fileno()
         self.name = ''
         self.room = -1
         self.state = SessionState.START
