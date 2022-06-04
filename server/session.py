@@ -14,11 +14,11 @@ class SessionState:
     ERROR    = 5
 
 class SessionCmd:
-    QUIT = 'quit'
-    HELP = 'help'
-    NEW  = 'new'
-    LIST = 'list'
-    JOIN = 'join'
+    QUIT = '/quit'
+    HELP = '/help'
+    NEW  = '/new'
+    LIST = '/list'
+    JOIN = '/join'
 
 class ChatCmd:
     QUIT   = '/quit'
