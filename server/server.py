@@ -1,6 +1,7 @@
 from sys import stderr
-import socket
 from select import select
+from datetime import datetime
+import socket
 
 import session, room
 
@@ -19,17 +20,21 @@ class Server:
             self.ls.close()
             print(err, file=stderr)
             return
+        print(f'{log_time()}: Server initialized')
 
     def __del__(self):
         self.ls.close()
         while self.sess:
             self.__close_session(0)
+        print(f'{log_time()}: Server closed')
 
     def init_success(self):
         return self.ls.fileno() > -1
 
     def run(self):
         rlist = [self.ls]
+
+        print(f'{log_time()}: Server running')
 
         while True:
             try:
@@ -54,6 +59,7 @@ class Server:
             self.__handle_room()
 
     def __accept_client(self):
+        print(f'{log_time()}: Accept client')
         try:
             self.sess.append(session.Session(self.ls.accept()))
             return True
@@ -68,6 +74,7 @@ class Server:
         return None
 
     def __close_session(self, i):
+        print(f'{log_time()}: Close session [{self.sess[i].id}]')
         r = self.__get_room_by_session(self.sess[i])
         if r:
             r.kick(self.sess[i])
@@ -82,3 +89,6 @@ class Server:
                 self.room.remove(r)
             else:
                 i += 1
+
+def log_time():
+    return datetime.now()
