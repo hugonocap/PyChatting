@@ -112,7 +112,7 @@ class Room:
     def tranship_owner(self, who, whom):
         sess = self.__get_sess_by_id(whom)
         if who == self.owner and sess:
-            self.__set_owner(sess)
+            self.__set_owner(whom)
             sess.send_msg(f'{who} transhiped you room owner\n', True)
             return True
         return False
