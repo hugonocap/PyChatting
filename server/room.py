@@ -71,8 +71,8 @@ class Room:
             buf += '\n'
         return buf
 
-    def set_var(self, sid, var, val):
-        if not self.__is_owner(sid):
+    def set_var(self, sess, var, val):
+        if not self.__is_owner(sess):
             return False
 
         if var == RoomVariable.NAME:
