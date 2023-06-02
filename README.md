@@ -1,4 +1,11 @@
-pychatting
-==========
+# PyChatting
 
-TCP chat server/client. It's my first try to use python, so nothing special here...
+## Summary
+PyChatting is TCP room-based chat server and client.
+
+## Features
+- Create or List & Join rooms
+- Configure room
+- Set new owners
+- Kick people
+- Check online
